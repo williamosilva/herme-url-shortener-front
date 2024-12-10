@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import axios from "axios"; // Make sure to install axios: npm install axios
 
 import { Copy, Github, Linkedin, Sun, Moon, Globe } from "lucide-react";
 
@@ -8,18 +9,43 @@ const UrlShortenerHero = () => {
   const apiKey = import.meta.env.VITE_API_KEY;
   const apiUrl = import.meta.env.VITE_API_URL;
 
-  console.log("API Key:", apiKey);
-  console.log("API URL:", apiUrl);
   const [originalUrl, setOriginalUrl] = useState("");
   const [shortenedUrl, setShortenedUrl] = useState("");
   const [copied, setCopied] = useState(false);
   const [isDarkTheme, setIsDarkTheme] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  const handleShorten = () => {
-    const fakeShortUrl = `https://short.url/${Math.random()
-      .toString(36)
-      .substring(7)}`;
-    setShortenedUrl(fakeShortUrl);
+  const handleShorten = async () => {
+    // Reset previous states
+    setShortenedUrl("");
+    setError(null);
+    setIsLoading(true);
+
+    try {
+      // Make POST request to shorten URL
+      const response = await axios.post(
+        apiUrl,
+        { url: originalUrl },
+        {
+          headers: {
+            "x-api-key": apiKey,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      // Construct shortened URL using backend response
+      const shortCode = response.data.id; // Assuming the response contains an 'id'
+      const constructedShortUrl = `${apiUrl}/${shortCode}`;
+
+      setShortenedUrl(constructedShortUrl);
+    } catch (err) {
+      console.error("URL shortening error:", err);
+      setError(err.response?.data?.message || "Failed to shorten URL");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleCopy = () => {
@@ -27,7 +53,6 @@ const UrlShortenerHero = () => {
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
-
   const toggleTheme = () => {
     setIsDarkTheme(!isDarkTheme);
   };
@@ -122,7 +147,7 @@ const UrlShortenerHero = () => {
             />
             <Button
               onClick={handleShorten}
-              disabled={!originalUrl}
+              disabled={!originalUrl || isLoading}
               className={`transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-transparent ${
                 isDarkTheme
                   ? "bg-blue-600 hover:bg-blue-500 text-white"
