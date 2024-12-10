@@ -14,7 +14,7 @@ const UrlShortenerHero = () => {
   const [copied, setCopied] = useState(false);
   const [isDarkTheme, setIsDarkTheme] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [, setError] = useState<string | null>(null);
 
   const handleShorten = async () => {
     // Reset previous states
@@ -23,26 +23,32 @@ const UrlShortenerHero = () => {
     setIsLoading(true);
 
     try {
-      // Make POST request to shorten URL
       const response = await axios.post(
-        apiUrl,
+        `${apiUrl}/url`,
         { url: originalUrl },
         {
           headers: {
             "x-api-key": apiKey,
-            "Content-Type": "application/json",
           },
         }
       );
 
-      // Construct shortened URL using backend response
       const shortCode = response.data.id; // Assuming the response contains an 'id'
       const constructedShortUrl = `${apiUrl}/${shortCode}`;
-
       setShortenedUrl(constructedShortUrl);
     } catch (err) {
       console.error("URL shortening error:", err);
-      setError(err.response?.data?.message || "Failed to shorten URL");
+
+      if (axios.isAxiosError(err)) {
+        // Handle Axios errors
+        setError(err.response?.data?.message || "Failed to shorten URL");
+      } else if (err instanceof Error) {
+        // Handle generic JavaScript errors
+        setError(err.message || "An unexpected error occurred");
+      } else {
+        // Handle unexpected error shapes
+        setError("An unexpected error occurred");
+      }
     } finally {
       setIsLoading(false);
     }
