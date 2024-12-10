@@ -5,6 +5,11 @@ import { Input } from "@/components/ui/input";
 import { Copy, Github, Linkedin, Sun, Moon, Globe } from "lucide-react";
 
 const UrlShortenerHero = () => {
+  const apiKey = import.meta.env.VITE_API_KEY;
+  const apiUrl = import.meta.env.VITE_API_URL;
+
+  console.log("API Key:", apiKey);
+  console.log("API URL:", apiUrl);
   const [originalUrl, setOriginalUrl] = useState("");
   const [shortenedUrl, setShortenedUrl] = useState("");
   const [copied, setCopied] = useState(false);
