@@ -17,7 +17,6 @@ const UrlShortenerHero = () => {
   const [, setError] = useState<string | null>(null);
 
   const handleShorten = async () => {
-    // Reset previous states
     setShortenedUrl("");
     setError(null);
     setIsLoading(true);
@@ -33,20 +32,17 @@ const UrlShortenerHero = () => {
         }
       );
 
-      const shortCode = response.data.id; // Assuming the response contains an 'id'
+      const shortCode = response.data.id;
       const constructedShortUrl = `${apiUrl}/${shortCode}`;
       setShortenedUrl(constructedShortUrl);
     } catch (err) {
       console.error("URL shortening error:", err);
 
       if (axios.isAxiosError(err)) {
-        // Handle Axios errors
         setError(err.response?.data?.message || "Failed to shorten URL");
       } else if (err instanceof Error) {
-        // Handle generic JavaScript errors
         setError(err.message || "An unexpected error occurred");
       } else {
-        // Handle unexpected error shapes
         setError("An unexpected error occurred");
       }
     } finally {
