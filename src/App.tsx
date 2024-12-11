@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import axios from "axios"; // Make sure to install axios: npm install axios
+import axios from "axios";
 
 import { Copy, Github, Linkedin, Sun, Moon, Globe } from "lucide-react";
 
