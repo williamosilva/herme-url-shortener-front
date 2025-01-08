@@ -63,12 +63,12 @@ const UrlShortenerHero = () => {
     const socialLinks = [
       {
         icon: Github,
-        link: "https://github.com/WilliamSilvaOliveiraa",
+        link: "https://github.com/williamosilva",
         label: "GitHub",
       },
       {
         icon: Globe,
-        link: "https://williamoliveirasilva.online/",
+        link: "https://williamsilva.dev/",
         label: "Blog",
       },
       {
